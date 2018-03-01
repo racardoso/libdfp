@@ -63,7 +63,7 @@ CONVERT_WRAPPER(
 	          return SIGNBIT(a) ? -INFINITY : INFINITY;
 	      }
 	  }
-	else if (exp < -39)	/* Obvious underflow. */
+	else if (exp <= -BINPOWOF10_DENORM_FLT)	/* Obvious underflow. */
 	  {
 	    if (DFP_EXCEPTIONS_ENABLED)
 	      DFP_HANDLE_EXCEPTIONS (FE_UNDERFLOW|FE_INEXACT);
@@ -72,7 +72,9 @@ CONVERT_WRAPPER(
 	      {
 	        case FE_TONEAREST:
 	          mant = llabs(a_norm);
-	          if (exp < -45 || ((exp == -45) && (mant >= 700649230000000)))
+	          if (exp < -BINPOWOF10_DENORM_FLT ||
+	                    ((exp == -BINPOWOF10_DENORM_FLT) &&
+	                     (mant >= 700649230000000)))
 	            return SIGNBIT(a) ? -0.0 : 0.0;
 	          else
 	            return SIGNBIT(a) ? -__FLT_DENORM_MIN__ : __FLT_DENORM_MIN__;

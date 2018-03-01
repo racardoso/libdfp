@@ -66,7 +66,7 @@ CONVERT_WRAPPER(
 	          return SIGNBIT(a) ? -INFINITY : INFINITY;
 	      }
 	  }
-	else if (exp < -BINPOWOF10_LIMIT)	/* Obvious underflow.  */
+	else if (exp <= -BINPOWOF10_DENORM_DBL)	/* Obvious underflow.  */
 	  {
 	    if (DFP_EXCEPTIONS_ENABLED)
 	      DFP_HANDLE_EXCEPTIONS (FE_UNDERFLOW|FE_INEXACT);
@@ -74,11 +74,17 @@ CONVERT_WRAPPER(
 	    switch (fegetround())
 	      {
 	        case FE_TONEAREST:
-	          mant = llabs(a_norm);
-	          if (exp < -324 || ((exp == -324) && (mant >= 24703282292062300)))
-	            return SIGNBIT(a) ? -0.0 : 0.0;
+	          mant = llabs (a_norm);
+	          if (exp < -BINPOWOF10_DENORM_DBL ||
+	                    ((exp == -BINPOWOF10_DENORM_DBL) &&
+	                     (mant >= 24703282292062300)))
+	           {
+	              return SIGNBIT(a) ? -0.0 : 0.0;
+	           }
 	          else
-                return SIGNBIT(a) ? -__DBL_DENORM_MIN__ : __DBL_DENORM_MIN__;
+	           {
+	              return SIGNBIT(a) ? -__DBL_DENORM_MIN__ : __DBL_DENORM_MIN__;
+	           }
 	        case FE_DOWNWARD:
 	          return SIGNBIT(a) ? -__DBL_DENORM_MIN__ : 0.0;
 	        case FE_UPWARD:

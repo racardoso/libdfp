@@ -16,7 +16,7 @@
    warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
    the GNU Lesser General Public License version 2.1 for more details.
 
-   You should have received a copy of the GNU Lesser General Public
+   DBLYou should have received a copy of the GNU Lesser General Public
    License version 2.1 along with the Decimal Floating Point C Library;
    if not, write to the Free Software Foundation, Inc., 59 Temple Place,
    Suite 330, Boston, MA 02111-1307 USA.
@@ -65,7 +65,7 @@ CONVERT_WRAPPER(
 	          return SIGNBIT(a) ? -INFINITY : INFINITY;
 	      }
 	  }
-	else if (exp < -BINPOWOF10_LIMIT)		/*Obviou sunderflow.  */
+	else if (exp <= -BINPOWOF10_DENORM_DBL)		/*Obvious underflow.  */
 	  {
 	    if (DFP_EXCEPTIONS_ENABLED)
 	      DFP_HANDLE_EXCEPTIONS (FE_UNDERFLOW|FE_INEXACT);
@@ -74,10 +74,16 @@ CONVERT_WRAPPER(
 	      {
 	        case FE_TONEAREST:
 	          mant = llabs (a_norm);
-	          if (exp < -324 || ((exp == -324) && (mant >= 24703282292062300)))
-	            return SIGNBIT(a) ? -0.0 : 0.0;
+	          if (exp < -BINPOWOF10_DENORM_DBL ||
+	                    ((exp == -BINPOWOF10_DENORM_DBL) &&
+	                     (mant >= 24703282292062300)))
+	           {
+	              return SIGNBIT(a) ? -0.0 : 0.0;
+	           }
 	          else
-	            return SIGNBIT(a) ? -__DBL_DENORM_MIN__ : __DBL_DENORM_MIN__;
+	           {
+	              return SIGNBIT(a) ? -__DBL_DENORM_MIN__ : __DBL_DENORM_MIN__;
+	           }
 	        case FE_DOWNWARD:
 	          return SIGNBIT(a) ? -__DBL_DENORM_MIN__ : 0.0;
 	        case FE_UPWARD:

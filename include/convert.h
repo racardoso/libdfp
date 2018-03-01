@@ -241,6 +241,8 @@ extern const _Decimal128 decpowof2[];
 
 #define BINPOWOF10 binpowof10
 #define BINPOWOF10_LIMIT 308
+#define BINPOWOF10_DENORM_DBL 324
+#define BINPOWOF10_DENORM_FLT 45
 #define DECPOWOF2 decpowof2
 
 #define FREXPSF		__builtin_frexpf
@@ -260,7 +262,7 @@ extern const _Decimal128 decpowof2[];
 #define FUNCTION_NAME PASTE4(NAME,SRC_KIND,DEST_KIND,)
 #endif
 
-/* Functions will need to be prefixed with __bid_ or __dpd_ depending on 
+/* Functions will need to be prefixed with __bid_ or __dpd_ depending on
  * how GCC was configured. --enable-decimal-float=[bid,dpd] */
 #if __DECIMAL_BID_FORMAT__==1
 #define PREFIXED_FUNCTION_NAME  PASTE(__bid_,FUNCTION_NAME)
