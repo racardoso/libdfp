@@ -25,6 +25,7 @@ libdfp_files += addsd3 adddd3 addtd3 \
 		extendsfsd extendsddf extendsdtf \
 		extendsfdd extenddfdd extendddtf \
 		extendsftd extenddftd extendtftd \
+		extendtdkf2 extendddkf2 extendsdkf2 \
 		fixsdsi fixddsi fixtdsi \
 		fixsddi fixdddi fixtddi \
 		fixunssdsi fixunsddsi fixunstdsi \
@@ -44,6 +45,7 @@ libdfp_files += addsd3 adddd3 addtd3 \
 		truncsdsf truncdfsd trunctfsd \
 		truncddsf truncdddf trunctfdd \
 		trunctdsf trunctddf trunctdtf \
+		trunckftd2 trunckfdd2 trunckfsd2 \
 		unordsd2 unorddd2 unordtd2 \
 		classify
 

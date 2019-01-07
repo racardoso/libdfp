@@ -26,6 +26,9 @@
 /* Define to 1 if you have the <fenv.h> header file. */
 #undef HAVE_FENV_H
 
+/* "Have binary128 floating point" */
+#undef HAVE_FLOAT128
+
 /* Define to 1 if you have the <float.h> header file. */
 #undef HAVE_FLOAT_H
 

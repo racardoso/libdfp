@@ -370,6 +370,33 @@ if test x$have_glibc_2_10_headers != xyes; then
 		available in GLIBC Version 2.10 or later.])
 fi
 
+AC_CACHE_CHECK([if $CC supports binary128 floating point type],
+               libdfp_cv_compiler_powerpc64le_binary128_ok, [
+save_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS -Werror -mfloat128"
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+__float128 a, b, c, d, e;
+int i;
+
+__float128
+foobar (__float128 x)
+{
+  a = __builtin_nansq ("0");
+  b = __builtin_huge_valq ();
+  c = __builtin_infq ();
+  d = __builtin_fabsq (x);
+  e = __builtin_nanq ("0");
+  i = __builtin_signbit (x);
+  return __builtin_copysignq (x, x);
+}
+]])],
+                  [libdfp_cv_compiler_powerpc64le_binary128_ok=yes],
+                  [libdfp_cv_compiler_powerpc64le_binary128_ok=no])
+CFLAGS="$save_CFLAGS"])
+
+if test x$libdfp_cv_compiler_powerpc64le_binary128_ok = xyes; then
+  AC_DEFINE_UNQUOTED([HAVE_FLOAT128], [1], ["Have binary128 floating point"])
+fi
 
 # Check for __uint128_t compiler support
 AC_CACHE_CHECK(for __uint128_t, libdfp_cv_uint128_t,

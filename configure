@@ -695,6 +695,7 @@ infodir
 docdir
 oldincludedir
 includedir
+runstatedir
 localstatedir
 sharedstatedir
 sysconfdir
@@ -779,6 +780,7 @@ datadir='${datarootdir}'
 sysconfdir='${prefix}/etc'
 sharedstatedir='${prefix}/com'
 localstatedir='${prefix}/var'
+runstatedir='${localstatedir}/run'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
 docdir='${datarootdir}/doc/${PACKAGE_TARNAME}'
@@ -1031,6 +1033,15 @@ do
   | -silent | --silent | --silen | --sile | --sil)
     silent=yes ;;
 
+  -runstatedir | --runstatedir | --runstatedi | --runstated \
+  | --runstate | --runstat | --runsta | --runst | --runs \
+  | --run | --ru | --r)
+    ac_prev=runstatedir ;;
+  -runstatedir=* | --runstatedir=* | --runstatedi=* | --runstated=* \
+  | --runstate=* | --runstat=* | --runsta=* | --runst=* | --runs=* \
+  | --run=* | --ru=* | --r=*)
+    runstatedir=$ac_optarg ;;
+
   -sbindir | --sbindir | --sbindi | --sbind | --sbin | --sbi | --sb)
     ac_prev=sbindir ;;
   -sbindir=* | --sbindir=* | --sbindi=* | --sbind=* | --sbin=* \
@@ -1168,7 +1179,7 @@ fi
 for ac_var in	exec_prefix prefix bindir sbindir libexecdir datarootdir \
 		datadir sysconfdir sharedstatedir localstatedir includedir \
 		oldincludedir docdir infodir htmldir dvidir pdfdir psdir \
-		libdir localedir mandir
+		libdir localedir mandir runstatedir
 do
   eval ac_val=\$$ac_var
   # Remove trailing slashes.
@@ -1321,6 +1332,7 @@ Fine tuning of the installation directories:
   --sysconfdir=DIR        read-only single-machine data [PREFIX/etc]
   --sharedstatedir=DIR    modifiable architecture-independent data [PREFIX/com]
   --localstatedir=DIR     modifiable single-machine data [PREFIX/var]
+  --runstatedir=DIR       modifiable per-process data [LOCALSTATEDIR/run]
   --libdir=DIR            object code libraries [EPREFIX/lib]
   --includedir=DIR        C header files [PREFIX/include]
   --oldincludedir=DIR     C header files for non-gcc [/usr/include]
@@ -4421,6 +4433,51 @@ if test x$have_glibc_2_10_headers != xyes; then
 		available in GLIBC Version 2.10 or later." "$LINENO" 5
 fi
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if $CC supports binary128 floating point type" >&5
+$as_echo_n "checking if $CC supports binary128 floating point type... " >&6; }
+if ${libdfp_cv_compiler_powerpc64le_binary128_ok+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+save_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS -Werror -mfloat128"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+__float128 a, b, c, d, e;
+int i;
+
+__float128
+foobar (__float128 x)
+{
+  a = __builtin_nansq ("0");
+  b = __builtin_huge_valq ();
+  c = __builtin_infq ();
+  d = __builtin_fabsq (x);
+  e = __builtin_nanq ("0");
+  i = __builtin_signbit (x);
+  return __builtin_copysignq (x, x);
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  libdfp_cv_compiler_powerpc64le_binary128_ok=yes
+else
+  libdfp_cv_compiler_powerpc64le_binary128_ok=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+CFLAGS="$save_CFLAGS"
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $libdfp_cv_compiler_powerpc64le_binary128_ok" >&5
+$as_echo "$libdfp_cv_compiler_powerpc64le_binary128_ok" >&6; }
+
+if test x$libdfp_cv_compiler_powerpc64le_binary128_ok = xyes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_FLOAT128 1
+_ACEOF
+
+fi
 
 # Check for __uint128_t compiler support
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __uint128_t" >&5

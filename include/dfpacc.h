@@ -112,6 +112,15 @@ hidden_proto_enc (extenddftd)
 _Decimal128  __BACKEND_(extendtftd) (long double);
 hidden_proto_enc (extendtftd)
 
+#ifdef HAVE_FLOAT128
+_Float128 __BACKEND_(extendtdkf2) (_Decimal128);
+hidden_proto_enc (extendtdkf2)
+_Float128 __BACKEND_(extendddkf2) (_Decimal64);
+hidden_proto_enc (extendddkf2)
+_Float128 __BACKEND_(extendsdkf2) (_Decimal32);
+hidden_proto_enc (extendsdkf2)
+#endif
+
 int __BACKEND_(fixsdsi) (_Decimal32);
 hidden_proto_enc (fixsdsi)
 int __BACKEND_(fixddsi) (_Decimal64);
@@ -276,6 +285,15 @@ double __BACKEND_(trunctddf) (_Decimal128);
 hidden_proto_enc (trunctddf)
 long double __BACKEND_(trunctdtf) (_Decimal128);
 hidden_proto_enc (trunctdtf)
+
+#ifdef HAVE_FLOAT128
+_Decimal128 __BACKEND_(trunckftd2) (_Float128);
+hidden_proto_enc (trunckftd2)
+_Decimal64 __BACKEND_(trunckfdd2) (_Float128);
+hidden_proto_enc (trunckfdd2)
+_Decimal32 __BACKEND_(trunckfsd2) (_Float128);
+hidden_proto_enc (trunckfsd2)
+#endif
 
 CMPINT __BACKEND_(unordsd2) (_Decimal32,_Decimal32);
 CMPINT __BACKEND_(unorddd2) (_Decimal64,_Decimal64);
